@@ -1,5 +1,5 @@
 {
-    "name": "OpenStreetMap-esp32",
+    "name": "OpenStreetMap-esp32-bb",
     "version": "1.0.6",
     "description": "This library provides a OpenStreetMap (OSM) map fetching and caching system for ESP32-based devices.",
     "keywords": [
@@ -13,12 +13,12 @@
         "tile-caching",
         "openstreetmap",
         "osm",
-        "lovyangfx",
+        "bb_spi_lcd",
         "pngdec"
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/CelliesProjects/OpenStreetMap-esp32"
+        "url": "https://github.com/CelliesProjects/OpenStreetMap-esp32-bb"
     },
     "authors": [
         {
