@@ -30,7 +30,7 @@
 #include <vector>
 #include <optional>
 #include <atomic>
-#include <LovyanGFX.hpp>
+#include <bb_spi_lcd.h>
 #include <PNGdec.h>
 
 #include "CachedTile.hpp"
@@ -90,7 +90,7 @@ public:
     void setSize(uint16_t w, uint16_t h);
     bool resizeTilesCache(uint16_t numberOfTiles);
     void freeTilesCache();
-    bool fetchMap(LGFX_Sprite &sprite, double longitude, double latitude, uint8_t zoom);
+    bool fetchMap(BB_SPI_LCD *sprite, double longitude, double latitude, uint8_t zoom);
 
 private:
     std::vector<CachedTile> tilesCache;
@@ -108,7 +108,7 @@ private:
     bool fetchTile(CachedTile &tile, uint32_t x, uint32_t y, uint8_t zoom, String &result);
     std::optional<std::unique_ptr<MemoryBuffer>> urlToBuffer(const char *url, String &result);
     bool fillBuffer(WiFiClient *stream, MemoryBuffer &buffer, size_t contentSize, String &result);
-    bool composeMap(LGFX_Sprite &mapSprite, const tileList &requiredTiles, uint8_t zoom);
+    bool composeMap(BB_SPI_LCD *mapSprite, const tileList &requiredTiles, uint8_t zoom);
     static void tileFetcherTask(void *param);
     TaskHandle_t ownerTask = nullptr;
     bool startTileWorkerTasks();

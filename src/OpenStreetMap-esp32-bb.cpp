@@ -21,7 +21,7 @@
     SPDX-License-Identifier: MIT
     */
 
-#include "OpenStreetMap-esp32.hpp"
+#include "OpenStreetMap-esp32-bb.hpp"
 
 OpenStreetMap::~OpenStreetMap()
 {
@@ -246,19 +246,12 @@ void OpenStreetMap::runJobs(const std::vector<TileJob> &jobs)
         vTaskDelay(pdMS_TO_TICKS(1));
 }
 
-bool OpenStreetMap::composeMap(LGFX_Sprite &mapSprite, const tileList &requiredTiles, uint8_t zoom)
+bool OpenStreetMap::composeMap(BB_SPI_LCD *mapSprite, const tileList &requiredTiles, uint8_t zoom)
 {
-    if (mapSprite.width() != mapWidth || mapSprite.height() != mapHeight)
+    if (!mapSprite->getBuffer() || mapSprite->width() != mapWidth || mapSprite->height() != mapHeight)
     {
-        mapSprite.deleteSprite();
-        mapSprite.setPsram(true);
-        mapSprite.setColorDepth(lgfx::rgb565_2Byte);
-        mapSprite.createSprite(mapWidth, mapHeight);
-        if (!mapSprite.getBuffer())
-        {
-            log_e("could not allocate map");
-            return false;
-        }
+        log_e("could not allocate");
+        return false;
     }
 
     int tileIndex = 0;
@@ -280,13 +273,13 @@ bool OpenStreetMap::composeMap(LGFX_Sprite &mapSprite, const tileList &requiredT
                                });
 
         if (it != tilesCache.end())
-            mapSprite.pushImage(drawX, drawY, OSM_TILESIZE, OSM_TILESIZE, it->buffer);
+            mapSprite->pushImage(drawX, drawY, OSM_TILESIZE, OSM_TILESIZE, it->buffer);
         else
             log_w("Tile (z=%d, x=%d, y=%d) not found in cache", zoom, tileX, tileY);
 
         tileIndex++;
     }
-
+/*
     constexpr uint32_t LESS_INTRUSIVE_MS = 15 * 60 * 1000;
     static unsigned long initTime = millis();
     if (millis() - initTime < LESS_INTRUSIVE_MS)
@@ -296,11 +289,11 @@ bool OpenStreetMap::composeMap(LGFX_Sprite &mapSprite, const tileList &requiredT
     mapSprite.drawRightString(" Map data from OpenStreetMap.org ",
                               mapSprite.width(), mapSprite.height() - 10, &DejaVu9);
     mapSprite.setTextColor(TFT_WHITE, TFT_BLACK);
-
+*/
     return true;
 }
 
-bool OpenStreetMap::fetchMap(LGFX_Sprite &mapSprite, double longitude, double latitude, uint8_t zoom)
+bool OpenStreetMap::fetchMap(BB_SPI_LCD *mapSprite, double longitude, double latitude, uint8_t zoom)
 {
     if (!tasksStarted && !startTileWorkerTasks())
     {
